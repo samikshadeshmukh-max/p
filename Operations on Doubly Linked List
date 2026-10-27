@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *prev, *next;
+};
+
+struct Node *head=NULL;
+
+void insert(int x, int pos) {
+    struct Node *n=malloc(sizeof(struct Node)), *p=head;
+    n->data=x;
+    n->prev=n->next=NULL;
+
+    if(pos==1) {
+        n->next=head;
+        if(head) head->prev=n;
+        head=n;
+        return;
+    }
+
+    for(int i=1; p && i<pos-1; i++) p=p->next;
+
+    if(!p) {
+        free(n);
+        printf("Invalid position\n");
+        return;
+    }
+
+    n->next=p->next;
+    n->prev=p;
+    if(p->next) p->next->prev=n;
+    p->next=n;
+}
+
+void delete(int pos) {
+    struct Node *p=head;
+
+    if(!p) return;
+
+    for(int i=1; p && i<pos; i++) p=p->next;
+
+    if(!p) {
+        printf("Invalid position\n");
+        return;
+    }
+
+    if(p->prev) p->prev->next=p->next;
+    else head=p->next;
+
+    if(p->next) p->next->prev=p->prev;
+
+    free(p);
+}
+
+void display() {
+    struct Node *p=head;
+    while(p) {
+        printf("%d <-> ",p->data);
+        p=p->next;
+    }
+    printf("NULL\n");
+}
+
+void reverseDisplay() {
+    struct Node *p=head;
+    if(!p) return;
+
+    while(p->next) p=p->next;
+
+    while(p) {
+        printf("%d <-> ",p->data);
+        p=p->prev;
+    }
+    printf("NULL\n");
+}
+
+void reverse() {
+    struct Node *p=head, *t;
+
+    while(p) {
+        t=p->prev;
+        p->prev=p->next;
+        p->next=t;
+        head=p;
+        p=p->prev;
+    }
+}
+
+int main() {
+    int ch,x,pos;
+
+    do {
+        printf("\n1.Insert 2.Delete 3.Display");
+        printf("\n4.Reverse display 5.Reverse list 0.Exit\n");
+        scanf("%d",&ch);
+
+        switch(ch) {
+        case 1:
+            scanf("%d%d",&x,&pos);
+            insert(x,pos);
+            break;
+        case 2:
+            scanf("%d",&pos);
+            delete(pos);
+            break;
+        case 3: display(); break;
+        case 4: reverseDisplay(); break;
+        case 5: reverse(); break;
+        }
+    } while(ch!=0);
+
+    return 0;
+}
