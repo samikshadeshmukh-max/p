@@ -9,7 +9,9 @@ struct Node {
 struct Node *head = NULL;
 
 void insert(int x, int pos) {
-    struct Node *n = malloc(sizeof(struct Node)), *p = head;
+    struct Node *n = malloc(sizeof(struct Node));
+    struct Node *p = head;
+
     n->data = x;
 
     if(pos == 1) {
@@ -18,83 +20,116 @@ void insert(int x, int pos) {
         return;
     }
 
-    for(int i=1; p && i<pos-1; i++) p=p->next;
+    for(int i=1; p && i<pos-1; i++)
+        p = p->next;
 
     if(!p) {
-        free(n);
         printf("Invalid position\n");
+        free(n);
         return;
     }
 
     n->next = p->next;
     p->next = n;
+    printf("Node inserted successfully\n");
 }
 
-void delete(int pos) {
-    struct Node *p=head, *t;
+void deleteNode(int pos) {
+    struct Node *p = head, *t;
 
-    if(!head) return;
-
-    if(pos==1) {
-        head=head->next;
-        free(p);
+    if(!head) {
+        printf("List is empty\n");
         return;
     }
 
-    for(int i=1; p && i<pos-1; i++) p=p->next;
+    if(pos == 1) {
+        head = head->next;
+        free(p);
+        printf("Node deleted successfully\n");
+        return;
+    }
+
+    for(int i=1; p && i<pos-1; i++)
+        p = p->next;
 
     if(!p || !p->next) {
         printf("Invalid position\n");
         return;
     }
 
-    t=p->next;
-    p->next=t->next;
+    t = p->next;
+    p->next = t->next;
     free(t);
+    printf("Node deleted successfully\n");
 }
 
 void display() {
-    struct Node *p=head;
+    struct Node *p = head;
+
+    if(!p) {
+        printf("List is empty\n");
+        return;
+    }
+
+    printf("Linked list: ");
     while(p) {
         printf("%d -> ", p->data);
-        p=p->next;
+        p = p->next;
     }
     printf("NULL\n");
 }
 
 void reverse() {
-    struct Node *p=NULL, *c=head, *n;
-    while(c) {
-        n=c->next;
-        c->next=p;
-        p=c;
-        c=n;
+    struct Node *prev = NULL, *cur = head, *next;
+
+    while(cur) {
+        next = cur->next;
+        cur->next = prev;
+        prev = cur;
+        cur = next;
     }
-    head=p;
+
+    head = prev;
+    printf("List reversed successfully\n");
 }
 
 int main() {
     int ch, x, pos;
 
     do {
-        printf("\n1.Insert 2.Delete 3.Display 4.Reverse 0.Exit\n");
+        printf("\n1.Insert\n2.Delete\n3.Display\n4.Reverse\n0.Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &ch);
 
         switch(ch) {
         case 1:
             printf("Enter value and position: ");
             scanf("%d%d", &x, &pos);
-            insert(x,pos);
+            insert(x, pos);
             break;
+
         case 2:
-            printf("Enter position: ");
+            printf("Enter position to delete: ");
             scanf("%d", &pos);
-            delete(pos);
+            deleteNode(pos);
             break;
-        case 3: display(); break;
-        case 4: reverse(); break;
+
+        case 3:
+            display();
+            break;
+
+        case 4:
+            reverse();
+            break;
+
+        case 0:
+            printf("Exiting...\n");
+            break;
+
+        default:
+            printf("Invalid choice\n");
         }
-    } while(ch!=0);
+    } while(ch != 0);
 
     return 0;
 }
