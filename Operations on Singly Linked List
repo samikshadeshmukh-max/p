@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+void insert(int x, int pos) {
+    struct Node *n = malloc(sizeof(struct Node)), *p = head;
+    n->data = x;
+
+    if(pos == 1) {
+        n->next = head;
+        head = n;
+        return;
+    }
+
+    for(int i=1; p && i<pos-1; i++) p=p->next;
+
+    if(!p) {
+        free(n);
+        printf("Invalid position\n");
+        return;
+    }
+
+    n->next = p->next;
+    p->next = n;
+}
+
+void delete(int pos) {
+    struct Node *p=head, *t;
+
+    if(!head) return;
+
+    if(pos==1) {
+        head=head->next;
+        free(p);
+        return;
+    }
+
+    for(int i=1; p && i<pos-1; i++) p=p->next;
+
+    if(!p || !p->next) {
+        printf("Invalid position\n");
+        return;
+    }
+
+    t=p->next;
+    p->next=t->next;
+    free(t);
+}
+
+void display() {
+    struct Node *p=head;
+    while(p) {
+        printf("%d -> ", p->data);
+        p=p->next;
+    }
+    printf("NULL\n");
+}
+
+void reverse() {
+    struct Node *p=NULL, *c=head, *n;
+    while(c) {
+        n=c->next;
+        c->next=p;
+        p=c;
+        c=n;
+    }
+    head=p;
+}
+
+int main() {
+    int ch, x, pos;
+
+    do {
+        printf("\n1.Insert 2.Delete 3.Display 4.Reverse 0.Exit\n");
+        scanf("%d", &ch);
+
+        switch(ch) {
+        case 1:
+            printf("Enter value and position: ");
+            scanf("%d%d", &x, &pos);
+            insert(x,pos);
+            break;
+        case 2:
+            printf("Enter position: ");
+            scanf("%d", &pos);
+            delete(pos);
+            break;
+        case 3: display(); break;
+        case 4: reverse(); break;
+        }
+    } while(ch!=0);
+
+    return 0;
+}
